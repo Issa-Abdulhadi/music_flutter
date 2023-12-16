@@ -3,11 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music_flutter/app/presentation/common/ui/custom_app_bar.dart';
+import 'package:music_flutter/app/presentation/common/ui/player_widget.dart';
 import 'package:music_flutter/app/presentation/pages/sound_list_page/bloc/sound_list_bloc.dart';
-import 'package:music_flutter/app/presentation/pages/sound_list_page/bloc/sound_list_event.dart';
 import 'package:music_flutter/app/presentation/pages/sound_list_page/bloc/sound_list_state.dart';
 import 'package:music_flutter/gen/assets.gen.dart';
-
 import '../../../domain/entites/sound_entity.dart';
 import '../../../utils/app_colors.dart';
 
@@ -40,7 +39,8 @@ class _Content extends StatelessWidget {
           },
         ),
       ),
-      body: BlocBuilder<SoundListBloc, SoundListState>(builder: (context, state) {
+      body:
+          BlocBuilder<SoundListBloc, SoundListState>(builder: (context, state) {
         if (state.status == SoundListStatus.loading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state.status == SoundListStatus.error) {
@@ -93,11 +93,10 @@ class _Content extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          _buildSeekSound(context,selectedSound),
+          PlayerWidget(url: selectedSound.soundUrl ?? "",selectedIndex: index,),
           const SizedBox(
             height: 10,
           ),
-          _buildSoundControllersView(context, selectedSound, index)
         ],
       );
     }
@@ -139,73 +138,7 @@ class _Content extends StatelessWidget {
     );
   }
 
-  Row _buildSoundControllersView(
-      BuildContext context, SoundEntity soundEntity, int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(
-          Icons.skip_previous_sharp,
-          color: Colors.white,
-          size: 30,
-        ),
-        const SizedBox(
-          width: 20,
-        ),
-        const Icon(
-          Icons.fast_rewind,
-          color: Colors.white,
-          size: 30,
-        ),
-        const SizedBox(
-          width: 20,
-        ),
-        InkWell(
-          onTap: () {
-            context.read<SoundListBloc>().add(StopAndPlaySoundsEvent(index));
-          },
-          child: Container(
-            width: 70.0,
-            height: 70.0,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white, // You can set any color you want
-            ),
-            // Your content goes here
-            child: Center(
-              child: soundEntity.isPlaying ?? false
-                  ? const Icon(
-                      Icons.pause,
-                      color: Colors.black,
-                      size: 40,
-                    )
-                  : const Icon(
-                      Icons.play_arrow,
-                      color: Colors.black,
-                      size: 40,
-                    ),
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 20,
-        ),
-        const Icon(
-          Icons.fast_forward,
-          color: Colors.white,
-          size: 30,
-        ),
-        const SizedBox(
-          width: 20,
-        ),
-        const Icon(
-          Icons.skip_next,
-          color: Colors.white,
-          size: 30,
-        )
-      ],
-    );
-  }
+
 
   Text _buildArtistName(SoundEntity selectedSound) {
     return Text(
@@ -324,40 +257,6 @@ class _Content extends StatelessWidget {
               child: Image.asset(
             "assets/sound_bg.png",
           )),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSeekSound(BuildContext context,SoundEntity selectedSound) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Sound Seek Bar
-          const Text(
-            "0:00",
-            style: TextStyle(color: Colors.white),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width*0.7,
-
-            child: Slider(
-              value: (selectedSound.duration?.inSeconds ?? 0) / 2,
-              // Set the initial value (0.0 to 1.0)
-              onChanged: (double value) {},
-              min: 0,
-              max: selectedSound.duration!.inSeconds.toDouble(),
-              thumbColor: Colors.white,
-
-              activeColor: AppColors.primary,
-              inactiveColor: Colors.white,
-            ),
-          ),
-          Text(
-            "${selectedSound.duration?.inMinutes} : ${selectedSound.duration!.inSeconds - (selectedSound.duration!.inMinutes * 60)}",
-            style: const TextStyle(color: Colors.white),
-          ),
         ],
       ),
     );

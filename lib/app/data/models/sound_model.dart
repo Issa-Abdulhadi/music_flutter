@@ -7,10 +7,12 @@ class SoundModel extends Equatable {
   int? durationInSeconds;
   String? artistImage;
   String? bgImage;
+  String? soundUrl;
 
   SoundModel({
     required this.title,
     required this.artist,
+    required this.soundUrl,
     required this.durationInSeconds,
     this.artistImage,
   });
@@ -18,6 +20,7 @@ class SoundModel extends Equatable {
   SoundModel.fromJson(dynamic json) {
     title = json['title'] as String;
     artist = json['artist'] as String;
+    soundUrl = json['soundUrl'] as String;
     durationInSeconds = json['duration'] as int;
     artistImage = json['artistImage'] as String;
     artistImage = json['bgImage'] as String;
@@ -30,5 +33,6 @@ class SoundModel extends Equatable {
         durationInSeconds,
         artistImage,
         bgImage,
+        soundUrl,
       ];
 }
